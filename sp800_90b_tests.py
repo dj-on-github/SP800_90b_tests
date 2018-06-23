@@ -92,7 +92,7 @@ non_iid_testlist = [
         'markov',
         'compression',
         'ttuple',
-        #'lrs',
+        'lrs',
         #'multi_mcv_in_window',
         #'lag_prediction',
         #'multi_mmc_prediction',
