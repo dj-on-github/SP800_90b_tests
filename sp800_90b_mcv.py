@@ -1,8 +1,7 @@
 #!/usr/bin/env python
 
-# sp_800_90b_mcv    .py
+# sp_800_90b_mcv.py
 #
-
 
 from __future__ import print_function
 from __future__ import division

@@ -3,12 +3,10 @@
 # sp_800_90b_lrs.py
 #
 
-
 from __future__ import print_function
 from __future__ import division
 
 import math
-
 import operator as op
 from functools import reduce
 
@@ -58,18 +56,12 @@ def lrs(bits,symbol_length=1, threshold=35):
     tuple_dict = dict()
     max_count = None
     max_tuple = None
-    #Q = [0 for x in range(1024)]  # Large enough to always be big enough
-    #P = [0 for x in range(1024)]  # Large enough to always be big enough
-    #P_max_array = [0 for x in range(1024)]  # Large enough to always be big enough
-    #last_five_maxes = [threshold+100 for i in range(5)]  # Keep track of the last 10. If they were all one,
-                                             # end to loop to save compute time.
     for u in range(1,min(L+1,128)):  # (max_count == None) or (max_count > threshold):
         max_count = 0
         max_tuple = None
         print ("   Testing u=",u,end="") 
         tuple_position_count = 1+L-u
         #print("   Searching through ",tuple_position_count," positions")
-
 
         for i in range(tuple_position_count):
             the_tuple = tuple(symbols[i:i+u])
@@ -81,21 +73,14 @@ def lrs(bits,symbol_length=1, threshold=35):
             if tuple_dict[the_tuple] > max_count:
                 max_count = tuple_dict[the_tuple]
                 max_tuple = the_tuple
-             #print ("   Found ",the_tuple," at location ",i," count = ",tuple_dict[the_tuple])
-        #Q[u]=max_count
-        #last_five_maxes = last_five_maxes[1:]
-        #last_five_maxes.append(max_count)
         print("   max tuple count: ",max_count)
         
         # Breakout condition
         if max_count < threshold:
-        # if (max(last_five_maxes)==1) or (max(last_five_maxes) < (threshold-10)):
             found_u = u
             break
-        #print("   Q[t] = ",max_count, "  Q[i]=",Q[1:t+1])
     max_count = 0
-    
-    
+       
     # Step 2
     tuple_dict = dict()
     last_max=threshold+100

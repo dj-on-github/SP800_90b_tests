@@ -3,7 +3,6 @@
 # sp_800_90b_compression.py
 #
 
-
 from __future__ import print_function
 from __future__ import division
 
