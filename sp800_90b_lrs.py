@@ -10,6 +10,39 @@ import math
 import operator as op
 from functools import reduce
 
+#unsigned long long ans = 1,a=1,b=1;
+#        int k = r,i=0;
+#        if (r > (n-r))
+#            k = n-r;
+#        for (i = n ; k >=1 ; k--,i--)
+#        {
+#            a *= i;
+#            b *= k;
+#            if (a%b == 0)
+#            {
+#                a = (a/b);
+#                b=1;
+#            }
+#        }
+#        ans = a/b;
+
+def new_nCr(n,r):
+    a=1
+    b=1
+    k = r
+    if r > (n-r):
+        k = n-r
+    i = n
+    while k >= i:
+        a = a*i
+        b = b*i
+        if (a % b)==0:
+            a=a/b
+            b = 1
+        k -= 1
+        i -= 1
+    return a/b
+        
 def nCr(n, r):
     r = min(r, n-r)
     numer = reduce(op.mul, range(n, n-r, -1), 1)
