@@ -96,7 +96,7 @@ non_iid_testlist = [
         'multi_mcv',
         #'lag_prediction',
         #'multi_mmc_prediction',
-        #'lz78y_prediction'
+        'lz78y'
         ]
 
 
