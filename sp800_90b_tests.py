@@ -91,12 +91,12 @@ non_iid_testlist = [
         'collision',
         'markov',
         'compression',
-        #'ttuple',
-        #'lrs',
         'multi_mwc',
-        #'lag_prediction',
-        #'multi_mmc_prediction',
-        #'lz78y_prediction'
+        'ttuple',
+        'lrs',
+        'lag_prediction',
+        'multi_mmc_prediction',
+        'lz78y'
         ]
 
 
@@ -106,7 +106,6 @@ iid_testlist = [
         'length_of_directional_runs',
         'number_of_increases_and_decreases',
         'number_of_runs_based_on_median',
-        'length_of_runs_based_in_mnedian',
         'average_collision',
         'max_collision',
         'periodicity',
