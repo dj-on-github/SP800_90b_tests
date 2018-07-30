@@ -50,8 +50,8 @@ def pfunc(plocal,r,N):
 
     return result
 
-def multi_mwc(bits,symbol_length=1, ws = [0,63,255,1023,4095]):
-    print("MULTI MCW Test")
+def lag_prediction(bits,symbol_length=1, ws = [0,63,255,1023,4095]):
+    print("LAG PREDICTION Test")
     bitcount = len(bits)
     L = bitcount//symbol_length
 

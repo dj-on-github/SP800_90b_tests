@@ -91,9 +91,9 @@ non_iid_testlist = [
         'collision',
         'markov',
         'compression',
-        'ttuple',
-        'lrs',
-        #'multi_mcv_in_window',
+        #'ttuple',
+        #'lrs',
+        'multi_mwc',
         #'lag_prediction',
         #'multi_mmc_prediction',
         #'lz78y_prediction'
