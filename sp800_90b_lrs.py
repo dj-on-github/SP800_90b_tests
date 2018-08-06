@@ -86,7 +86,6 @@ def lrs(bits,symbol_length=1, threshold=35):
     #Steps 1
     # Find-
     # The smallest u-tuple length for which the count is less than 35
-    tuple_dict = dict()
     max_count = None
     max_tuple = None
     for u in range(1,min(L+1,128)):  # (max_count == None) or (max_count > threshold):
@@ -96,6 +95,7 @@ def lrs(bits,symbol_length=1, threshold=35):
         tuple_position_count = 1+L-u
         #print("   Searching through ",tuple_position_count," positions")
 
+        tuple_dict = dict()
         for i in range(tuple_position_count):
             the_tuple = tuple(symbols[i:i+u])
             if the_tuple in tuple_dict:
@@ -106,16 +106,16 @@ def lrs(bits,symbol_length=1, threshold=35):
             if tuple_dict[the_tuple] > max_count:
                 max_count = tuple_dict[the_tuple]
                 max_tuple = the_tuple
+
         print("   max tuple count: ",max_count)
-        
         # Breakout condition
         if max_count < threshold:
             found_u = u
             break
     max_count = 0
        
+    print("   DICT SIZE:",len(tuple_dict))        
     # Step 2
-    tuple_dict = dict()
     last_max=threshold+100
     for v in range(1,min(L+1,128)):
         last_max = max_count
@@ -124,6 +124,8 @@ def lrs(bits,symbol_length=1, threshold=35):
         print ("   Testing v=",v,end="") 
         tuple_position_count = 1+L-v
         #print("   Searching through ",tuple_position_count," positions")
+        
+        tuple_dict = dict()
 
         for i in range(tuple_position_count):
             the_tuple = tuple(symbols[i:i+v])
@@ -141,6 +143,7 @@ def lrs(bits,symbol_length=1, threshold=35):
         if (last_max > 1) and (max_count==1):
             found_v = v
             break
+    print("   DICT SIZE:",len(tuple_dict))        
     v = found_v
     
     # Step 3
