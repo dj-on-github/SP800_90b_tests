@@ -91,9 +91,9 @@ non_iid_testlist = [
         'collision',
         'markov',
         'compression',
-        'multi_mwc',
         'ttuple',
         'lrs',
+        'multi_mwc',
         'lag_prediction',
         'multi_mmc_prediction',
         'lz78y'
@@ -180,7 +180,12 @@ else:
     print
     print("SUMMARY")
     print("-------")
+    print("File            ",filename)
+    print("Bits per symbol ",symbol_length)
+    print("Symbol Count    ",len(bits)//symbol_length)
+    print("")      
     print("NAME".ljust(40),"T".ljust(18),"MIN ENTROPY") 
+    print("----".ljust(40),"-".ljust(18),"-----------") 
     for result in results:
         (summary_name,summary_t, summary_me) = result
         print(summary_name.ljust(40),str(summary_t).ljust(18),str(summary_me))
