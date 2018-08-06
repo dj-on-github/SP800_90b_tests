@@ -17,3 +17,5 @@ There are problems:
 A note on IID vs. Non-IID:
 I might get around to implementing the non-IID tests (these are tests to decide if you claim of having IID data is true). However I doubt it since I am very non-motivated. This is because no entropy source in this universe is IID and so claiming it and testing for it is just stupid. All that non-IID test suite and the shuffling nonsense needs to be removed from the spec.
 
+Why does this exist? Why not just use the NIST code? 
+Because the NIST 90B software sucks. It is buggy and has a terrible text mode menus, questions and answers user interface. This implementation has a normal command line interface. Point it as your random file. It runs the tests and gives you a summary of the entropy estimates at the end.
