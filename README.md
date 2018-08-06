@@ -11,7 +11,7 @@ If you execute the individual test files, they will run the example vectors from
 
 There are problems:
 1) It's slow. There are optimizations that can be made.
-2) The LRS test runs out of memory on windows when the dictionary reaches 11184810 keys (this is on a Win10 machine with 16GB of memory). It did fine on Linux. This is really a shortcoming of the LRS test which for reasonable input data sizes, creates a huge dictionary.
+2) The LRS test runs out of memory on windows when the dictionary reaches 11184810 keys (this is on a Win10 machine with 16GB of memory). It did fine on Linux. This is really a shortcoming of the LRS test which for reasonable input data sizes, creates a huge dictionary.[Fixed]
 3) Its probably buggy.
 
 A note on IID vs. Non-IID:
