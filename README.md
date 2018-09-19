@@ -15,12 +15,13 @@ There are problems:
 1) It's slow. There are optimizations that can be made.
 2) The LRS test runs out of memory on windows when the dictionary reaches 11184810 keys (this is on a Win10 machine with 16GB of memory). It did fine on Linux. This is really a shortcoming of the LRS test which for reasonable input data sizes, creates a huge dictionary.[Fixed]
 3) Its probably buggy.
+4) Actually it is buggy LRS, MMC and so on. Changes are afoot.
 
 **A note on IID vs. Non-IID**
-I might get around to implementing the non-IID tests (these are tests to decide if you claim of having IID data is true). However I doubt it since I am very non-motivated. This is because no entropy source in this universe is IID and so claiming it and testing for it is just stupid. All that non-IID test suite and the shuffling nonsense needs to be removed from the spec.
+I might get around to implementing the IID tests (these are tests to decide if you claim of having IID data is true). However I doubt it since I am very non-motivated. This is because no entropy source in this universe is IID and so claiming it and testing for it is just stupid. All that IID test suite and the shuffling nonsense needs to be removed from the spec.
 
 **Why does this exist? Why not just use the NIST code?**
-Because the NIST 90B software sucks. It is buggy and has a terrible text mode menus, questions and answers user interface. This implementation has a normal command line interface. Point it as your random file. It runs the tests and gives you a summary of the entropy estimates at the end.
+Because the NIST 90B software sucks. The command line interface doesn't accept multiple files and doesn't output CSV. The intent here is to mirror the very useful file handling in djent. This implementation has a normal command line interface. Point it as your binary random file. It runs the tests and gives you a summary of the entropy estimates at the end.
 
 **Command Line Options**
 There are options and stuff:
