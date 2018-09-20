@@ -68,7 +68,7 @@ def int_to_bits(s,l):
         s = s >> 1
     return thebits
  
-def lrs(bits,symbol_length=1, threshold=35):
+def lrs(bits,symbol_length=1, verbose=True, threshold=35):
     print("LRS Test")
     bitcount = len(bits)
     L = bitcount//symbol_length
@@ -80,7 +80,8 @@ def lrs(bits,symbol_length=1, threshold=35):
     print("   t-threshold = ",threshold)
 
     # Split bits into integer symbols
-    symbols = [ bits_to_int(bits[symbol_length*i:symbol_length*(i+1)]) for i in range(L)]
+    # Prefix with 0 to start index at 1
+    S = [0,]+[ bits_to_int(bits[symbol_length*i:symbol_length*(i+1)]) for i in range(L)]
     #print(symbols) 
 
     #Steps 1
@@ -97,7 +98,7 @@ def lrs(bits,symbol_length=1, threshold=35):
 
         tuple_dict = dict()
         for i in range(tuple_position_count):
-            the_tuple = tuple(symbols[i:i+u])
+            the_tuple = tuple(S[i:i+u])
             if the_tuple in tuple_dict:
                 tuple_dict[the_tuple] += 1
             else:
@@ -128,7 +129,7 @@ def lrs(bits,symbol_length=1, threshold=35):
         tuple_dict = dict()
 
         for i in range(tuple_position_count):
-            the_tuple = tuple(symbols[i:i+v])
+            the_tuple = tuple(S[i:i+v])
             if the_tuple in tuple_dict:
                 tuple_dict[the_tuple] += 1
             else:
@@ -156,8 +157,8 @@ def lrs(bits,symbol_length=1, threshold=35):
         ith_unique_W_tuple_count = list()
         tuple_dict=dict()
         
-        for i in range(1+L-W):
-            the_tuple = tuple(symbols[i:i+W])
+        for i in range(1,1+1+L-W):
+            the_tuple = tuple(S[i:i+W])
             if the_tuple in tuple_dict:
                 tuple_dict[the_tuple] += 1
                 #print(ith_unique_W_tuple_count)
@@ -170,7 +171,8 @@ def lrs(bits,symbol_length=1, threshold=35):
         C = ith_unique_W_tuple_count
         #print("   C = ",C)
         p_max = [0.0 for x in range(W)]
-        for c in C:
+        P[W] = 0.0
+        for c in C[1:]:
             if (2 <= c):
                 P[W] += nCr(c,2)
         P[W] = P[W]/(nCr(L-W+1,2))
@@ -197,6 +199,6 @@ if __name__ == "__main__":
     symbols = [2, 2, 0, 1, 0, 2, 0, 1, 2, 1, 2, 0, 1, 2, 1, 0, 0, 1, 0, 0, 0]
     for s in symbols:
         bits = bits + int_to_bits(s,2)
-    (iid_assumption,T,min_entropy) = lrs(bits,symbol_length=2,threshold=3)
+    (iid_assumption,T,min_entropy) = lrs(bits,symbol_length=2,verbose=True, threshold=3)
     
     print("min_entropy = ",min_entropy)

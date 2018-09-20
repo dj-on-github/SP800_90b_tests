@@ -10,6 +10,10 @@ from __future__ import print_function
 import argparse
 import sys
 
+def vprint(verbose,*args,**kwargs):
+    if verbose:
+        print(*args,**kwargs)
+
 def read_bits_from_file(filename,bigendian,symbol_length=1,symbols=(1024*1024)):
     bitlist = list()
     bitcount = symbol_length*symbols
@@ -45,6 +49,7 @@ parser.add_argument('-t', '--testname', default=None,help='Select the test to ru
 parser.add_argument('-l', '--symbol_length', type=int, default=1,help='Indicate the length of each symbol in bits')
 parser.add_argument('--list_tests', action='store_true',help='Display the list of tests')
 parser.add_argument('--test_iid', action='store_true',default=False,help='Run Tests of IID Assumption (section 5)')
+parser.add_argument('-v','--verbose', action='store_true',default=False,help='Output information as tests are running')
 
 args = parser.parse_args()
 
@@ -95,7 +100,7 @@ non_iid_testlist = [
         'lrs',
         'multi_mwc',
         'lag_prediction',
-        'multi_mmc_prediction',
+        #'multi_mmc_prediction',
         'lz78y'
         ]
 
@@ -130,13 +135,16 @@ else:
 
 symbol_length = int(args.symbol_length)
 bits = read_bits_from_file(filename,bigendian)    
+verbose = args.verbose
+
+#print ("verbose = ",verbose)
 
 if args.testname:
     if args.testname in testlist:    
         m = __import__ ("sp800_90b_"+args.testname)
         func = getattr(m,args.testname)
-        print("TEST: %s" % args.testname)
-        (iid_assumption,T,entropy_estimate) = func(bits,symbol_length)
+        vprint(verbose,"TEST: %s" % args.testname)
+        (iid_assumption,T,entropy_estimate) = func(bits,symbol_length, verbose=verbose)
 
         if iid_assumption:
             print("IID Assumption : T = ",str(T))
@@ -150,14 +158,14 @@ else:
     me_list=list()
     t_list=list()
     for testname in testlist:
-        print("TEST: %s" % testname)
+        vprint("TEST: %s" % testname)
         if (testname=="markov" or testname=="collision") and (symbol_length > 1):
             print("  Skipping test, it only runs on 1 bit symbols")
         else:
             m = __import__ ("sp800_90b_"+testname)
             func = getattr(m,testname)
         
-            (iid_assumption,T,min_entropy) = func(bits,symbol_length)
+            (iid_assumption,T,min_entropy) = func(bits,symbol_length, verbose=verbose)
 
             summary_name = testname
 
