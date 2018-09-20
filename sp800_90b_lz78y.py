@@ -8,6 +8,7 @@ from __future__ import division
 
 import math
 from mpmath import *
+from common_functions import *
 precision = 300
 
 def bits_to_int(bits):
@@ -43,7 +44,7 @@ def p_local_func(p,r,N):
     return result
 
     
-def lz78y(bits,symbol_length=1,B=16, quiet=True):
+def lz78y(bits,symbol_length=1,verbose=True,B=16):
     print("LZ78Y Test")
     bitcount = len(bits)
     L = bitcount//symbol_length
@@ -71,7 +72,7 @@ def lz78y(bits,symbol_length=1,B=16, quiet=True):
     dictionarySize = 0
     
     # Step 3
-    if not quiet:
+    if verbose:
         print("    ","i".ljust(4),"Add to D".ljust(20),"prev".ljust(14),"Max D[prev]".ljust(16),
                 "prediction".ljust(12),"Si".ljust(4),"Correct_i-b-1")
     for i in range(B+2,L+1):
@@ -119,18 +120,18 @@ def lz78y(bits,symbol_length=1,B=16, quiet=True):
         #print(add_to_d)
         #print(prevlist)
         #print(maxdlist)
-        if not quiet:
-            for pad in range(20):
-                add_to_d.append("-")
-                prevlist.append("-")
-                maxdlist.append("-")
-            for line in range(4):
-                if line == 0:
-                    print("    ",str(i).ljust(4),add_to_d[line].ljust(20), prevlist[line].ljust(14), str(maxcount).ljust(16),
-                                str(prediction).ljust(12),str(S[i]).ljust(4), correct[i-B-1])
-                else:
-                    print("    "," ".ljust(4),add_to_d[line].ljust(20), prevlist[line].ljust(14), str(maxcount).ljust(16),
-                                " ".ljust(12)," ".ljust(4), " ")
+        #if verbose:
+        #    for pad in range(20):
+        #        add_to_d.append("-")
+        #        prevlist.append("-")
+        #        maxdlist.append("-")
+        #    for line in range(4):
+        #        if line == 0:
+        #            print("    ",str(i).ljust(4),add_to_d[line].ljust(20), prevlist[line].ljust(14), str(maxcount).ljust(16),
+        #                        str(prediction).ljust(12),str(S[i]).ljust(4), correct[i-B-1])
+        #        else:
+        #            print("    "," ".ljust(4),add_to_d[line].ljust(20), prevlist[line].ljust(14), str(maxcount).ljust(16),
+        #                        " ".ljust(12)," ".ljust(4), " ")
     # step 4
     C = sum(correct)
     #print("    correct              ",correct)

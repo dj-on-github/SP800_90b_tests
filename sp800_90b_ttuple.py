@@ -22,7 +22,7 @@ def int_to_bits(s,l):
         s = s >> 1
     return thebits
  
-def ttuple(bits,symbol_length=1, threshold=35):
+def ttuple(bits,symbol_length=1,verbose=True, threshold=35):
     print("T-TUPLE Test")
     bitcount = len(bits)
     L = bitcount//symbol_length

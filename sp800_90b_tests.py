@@ -1,4 +1,4 @@
-#!/usr/bin/env python3
+#!/usr/bin/env python
 
 # sp800_90_tests.py
 # 
@@ -108,10 +108,10 @@ non_iid_testlist = [
         'compression',
         'ttuple',
         'lrs',
-        'multi_mwc',
-        'lag_prediction',
+        #'multi_mwc',
+        #'lag_prediction',
         #'multi_mmc_prediction',
-        'lz78y'
+        #'lz78y'
         ]
 
 

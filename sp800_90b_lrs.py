@@ -89,7 +89,7 @@ def lrs(bits,symbol_length=1, verbose=True, threshold=35):
     # The smallest u-tuple length for which the count is less than 35
     max_count = None
     max_tuple = None
-    for u in range(1,min(L+1,128)):  # (max_count == None) or (max_count > threshold):
+    for u in range(1,L+1):  # (max_count == None) or (max_count > threshold):
         max_count = 0
         max_tuple = None
         print ("   Testing u=",u,end="") 

@@ -16,7 +16,7 @@ def bits_to_int(bits):
         theint = (theint << 1) + bits[i]
     return theint
        
-def markov(bits,symbol_length):
+def markov(bits,symbol_length,verbose=True):
     print("MARKOV Test")
     L = len(bits)
 

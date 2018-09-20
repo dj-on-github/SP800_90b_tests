@@ -9,6 +9,7 @@ from __future__ import division
 import math
 import operator as op
 from functools import reduce
+from common_functions import *
 
 def nCr(n, r):
     r = min(r, n-r)
@@ -50,8 +51,8 @@ def pfunc(plocal,r,N):
 
     return result
 
-def multi_mwc(bits,symbol_length=1, ws = [0,63,255,1023,4095]):
-    print("MULTI MCW Test")
+def multi_mwc(bits,symbol_length=1, verbose=True, ws = [0,63,255,1023,4095]):
+    print("MULTI MWC Test")
     bitcount = len(bits)
     L = bitcount//symbol_length
 

@@ -14,7 +14,7 @@ def bits_to_int(bits):
         theint = (theint << 1) + bits[i]
     return theint
        
-def mcv(bits,symbol_length):
+def mcv(bits,symbol_length,verbose=True):
     print("MCV Test")
     bitcount = len(bits)
     L = bitcount//symbol_length

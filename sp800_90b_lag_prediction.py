@@ -9,6 +9,7 @@ from __future__ import division
 import math
 import operator as op
 from functools import reduce
+from common_functions import *
 
 def nCr(n, r):
     r = min(r, n-r)
@@ -50,7 +51,7 @@ def pfunc(plocal,r,N):
 
     return result
 
-def lag_prediction(bits,symbol_length=1, D=128):
+def lag_prediction(bits,symbol_length=1,verbose=True, D=128):
     print("LAG PREDICTION Test")
     bitcount = len(bits)
     L = bitcount//symbol_length

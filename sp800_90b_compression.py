@@ -31,7 +31,7 @@ def G(z, v, d, L):
     g_sum += z * sum(st)
     return g_sum/v
         
-def compression(bits,symbol_length=1, d=1000):
+def compression(bits,symbol_length=1,verbose=True, d=1000):
     print("COMPRESSION Test")
     L = len(bits)
 
