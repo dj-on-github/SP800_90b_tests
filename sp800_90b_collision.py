@@ -8,7 +8,7 @@ from __future__ import division
 
 import math
 
-from gamma_functions import *
+from common_functions import *
 
 def pq_func(p):
     q = 1.0-p
@@ -22,7 +22,7 @@ def pq_func(p):
 
     return result
 
-def collision(bits,symbol_length=1):
+def collision(bits,symbol_length=1,verbose=True):
     print("Collision Test")
     if symbol_length > 1:
         print("Warning: Collision test is only to be run with symbol length of 1")

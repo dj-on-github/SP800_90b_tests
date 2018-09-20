@@ -46,6 +46,9 @@ optional arguments:
                         Use --list_tests to see the list
   -l SYMBOL_LENGTH, --symbol_length SYMBOL_LENGTH
                         Indicate the length of each symbol in bits
+  -s SYMBOLS            Specify the number of symbols to take from the file
   --list_tests          Display the list of tests
   --test_iid            Run Tests of IID Assumption (section 5)
+  -v, --verbose         Output more information
+  
 ```

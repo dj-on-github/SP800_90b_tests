@@ -108,7 +108,7 @@ non_iid_testlist = [
         'compression',
         'ttuple',
         'lrs',
-        #'multi_mwc',
+        #'multi_mcw',
         'lag_prediction',
         #'multi_mmc_prediction',
         #'lz78y'

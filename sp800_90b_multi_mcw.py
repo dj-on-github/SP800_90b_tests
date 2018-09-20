@@ -51,7 +51,7 @@ def pfunc(plocal,r,N):
 
     return result
 
-def multi_mwc(bits,symbol_length=1, verbose=True, ws = [0,63,255,1023,4095]):
+def multi_mcw(bits,symbol_length=1, verbose=True, ws = [0,63,255,1023,4095]):
     print("MULTI MWC Test")
     bitcount = len(bits)
     L = bitcount//symbol_length
@@ -210,6 +210,6 @@ if __name__ == "__main__":
     symbols = [1,2,1,0,2,1,1,2,2,0,0,0]
     for s in symbols:
         bits = bits + int_to_bits(s,2)
-    (iid_assumption,T,min_entropy) = multi_mwc(bits,symbol_length=2,ws=[0,3,5,7,9])
+    (iid_assumption,T,min_entropy) = multi_mcw(bits,symbol_length=2,ws=[0,3,5,7,9])
     
     print("min_entropy = ",min_entropy)
