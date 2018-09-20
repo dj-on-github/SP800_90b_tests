@@ -93,11 +93,11 @@ def lrs(bits,symbol_length=1, verbose=True, threshold=35):
         max_count = 0
         max_tuple = None
         print ("   Testing u=",u,end="") 
-        tuple_position_count = 1+L-u
+        tuple_position_count = L-u
         #print("   Searching through ",tuple_position_count," positions")
 
         tuple_dict = dict()
-        for i in range(tuple_position_count):
+        for i in range(1,tuple_position_count+1):
             the_tuple = tuple(S[i:i+u])
             if the_tuple in tuple_dict:
                 tuple_dict[the_tuple] += 1
@@ -107,17 +107,19 @@ def lrs(bits,symbol_length=1, verbose=True, threshold=35):
             if tuple_dict[the_tuple] > max_count:
                 max_count = tuple_dict[the_tuple]
                 max_tuple = the_tuple
-
-        print("   max tuple count: ",max_count)
+        max_count = max(tuple_dict.values())
+        print("   max tuple count: ",max(tuple_dict.values()))
         # Breakout condition
         if max_count < threshold:
             found_u = u
             break
     max_count = 0
-       
+    print("    u :",u)
+     
     print("   DICT SIZE:",len(tuple_dict))        
     # Step 2
     last_max=threshold+100
+    last_v = None
     for v in range(1,min(L+1,128)):
         last_max = max_count
         max_count = 0
@@ -128,7 +130,7 @@ def lrs(bits,symbol_length=1, verbose=True, threshold=35):
         
         tuple_dict = dict()
 
-        for i in range(tuple_position_count):
+        for i in range(1,tuple_position_count+1):
             the_tuple = tuple(S[i:i+v])
             if the_tuple in tuple_dict:
                 tuple_dict[the_tuple] += 1
@@ -138,14 +140,17 @@ def lrs(bits,symbol_length=1, verbose=True, threshold=35):
             if tuple_dict[the_tuple] > max_count:
                 max_count = tuple_dict[the_tuple]
                 max_tuple = the_tuple
+        #max_count = max(tuple_dict.values())
         print("   max tuple count: ",max_count)
         
         # Breakout condition
         if (last_max > 1) and (max_count==1):
-            found_v = v
+            found_v = last_v
             break
+        last_v = v
     print("   DICT SIZE:",len(tuple_dict))        
     v = found_v
+    print("    v :",v)
     
     # Step 3
     P = [0.0 for x in range(v+1)]
@@ -154,7 +159,7 @@ def lrs(bits,symbol_length=1, verbose=True, threshold=35):
         C=list()
         C.append(0) # Zeroth element ignored
         ith_unique_W_tuple = list()
-        ith_unique_W_tuple_count = list()
+        ith_unique_W_tuple_count = dict()
         tuple_dict=dict()
         
         for i in range(1,1+1+L-W):
@@ -162,18 +167,22 @@ def lrs(bits,symbol_length=1, verbose=True, threshold=35):
             if the_tuple in tuple_dict:
                 tuple_dict[the_tuple] += 1
                 #print(ith_unique_W_tuple_count)
-                ith_unique_W_tuple_count[-1] += 1
+                ith_unique_W_tuple_count[the_tuple] += 1
             else:
                 tuple_dict[the_tuple] = 1
                 ith_unique_W_tuple.append(the_tuple)
-                ith_unique_W_tuple_count.append(1)
+                ith_unique_W_tuple_count[the_tuple]=1
 
-        C = ith_unique_W_tuple_count
+        C = [ith_unique_W_tuple_count[x] for x in ith_unique_W_tuple]
         #print("   C = ",C)
         p_max = [0.0 for x in range(W)]
         P[W] = 0.0
-        for c in C[1:]:
-            if (2 <= c):
+        for c in C:
+            if (c==2):
+                P[W] += 1
+            elif (c==3):
+                P[W] += 3
+            elif (c > 3):
                 P[W] += nCr(c,2)
         P[W] = P[W]/(nCr(L-W+1,2))
         P_max[W]=P[W]**(1.0/W)
@@ -202,3 +211,9 @@ if __name__ == "__main__":
     (iid_assumption,T,min_entropy) = lrs(bits,symbol_length=2,verbose=True, threshold=3)
     
     print("min_entropy = ",min_entropy)
+
+# goodmegrand.bin 1 bit result from NIST Tool
+
+#u: 18
+#v: 37
+#- LRS Estimate: p(max) = 0.500315, min-entropy = 0.999092
