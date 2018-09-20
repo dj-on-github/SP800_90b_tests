@@ -36,20 +36,20 @@ def int_to_bits(s,l):
         s = s >> 1
     return thebits
 
-def pfunc(plocal,r,N):
-    q = 1.0-plocal
-    
-    # Find x10
-    x = 0.0
-    for j in range(1,11):
-        x = 1.0 + (q*(plocal**r)*(x**(r+1.0)))
-
-    # do the equation
-    result = (1.0 - plocal*x)
-    result = result/((r+1.0 - (r*x))*q)
-    result = result/(x**(N+1))
-
-    return result
+#def pfunc(plocal,r,N):
+#    q = 1.0-plocal
+#    
+#    # Find x10
+#    x = 0.0
+#    for j in range(1,11):
+#        x = 1.0 + (q*(plocal**r)*(x**(r+1.0)))
+#
+#    # do the equation
+#    result = (1.0 - plocal*x)
+#    result = result/((r+1.0 - (r*x))*q)
+#    result = result/(x**(N+1))
+#
+#    return result
 
 def lag_prediction(bits,symbol_length=1,verbose=True, D=128):
     print("LAG PREDICTION Test")
@@ -127,30 +127,34 @@ def lag_prediction(bits,symbol_length=1,verbose=True, D=128):
 
     r = max_runlength+1
 
-    # Binary chop search for Plocal
-    iterations = 1000
-    iteration = 0
-    min_plocal = -0.1
-    max_plocal = 1.1
-    found = False
-    while (iteration < 1000):
-        candidate = (min_plocal + max_plocal)/2.0
-        result = pfunc(candidate,r,N)
-        iteration += 1
-        if iteration > iterations:
-            found = False
-            break
-        elif (result > (0.99-0.00000001)) and (result < (0.99+0.00000001)):
-            found = True
-            P_local = candidate
-            break
-        elif result > 0.99:
-            min_plocal = candidate
-        else:
-            max_plocal = candidate
+    #solve_for_p(mu_bar=0.99, n=N, v=r, tolerance=1e-09)
+    P_local = search_for_p(r,N,verbose=verbose)
+    
+    if False:
+        # Binary chop search for Plocal
+        iterations = 1000
+        iteration = 0
+        min_plocal = -0.1
+        max_plocal = 1.1
+        found = False
+        while (iteration < 1000):
+            candidate = (min_plocal + max_plocal)/2.0
+            result = pfunc(candidate,r,N)
+            iteration += 1
+            if iteration > iterations:
+                found = False
+                break
+            elif (result > (0.99-0.00000001)) and (result < (0.99+0.00000001)):
+                found = True
+                P_local = candidate
+                break
+            elif result > 0.99:
+                min_plocal = candidate
+            else:
+                max_plocal = candidate
 
-    if (found == False):
-        print ("Warning: P_local not found")
+        if (found == False):
+            print ("Warning: P_local not found")
 
     print("   P_local                 ",P_local)
     k = 2.0**symbol_length
