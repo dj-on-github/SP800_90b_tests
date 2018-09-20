@@ -22,9 +22,10 @@ def read_bits_from_file(filename,bigendian,symbol_length=1,symbols=(1024*1024)):
         f = sys.stdin
     else:
         f = open(filename, "rb")
+        
     while bits_so_far < bitcount:
-        bytes = f.read(16384)
-        if bytes:
+        bytes = f.read(16384) # Read a chunk
+        if bytes and (bits_so_far < bitcount):
             for bytech in bytes:
                 if sys.version_info > (3,0):
                     byte = bytech
@@ -38,8 +39,16 @@ def read_bits_from_file(filename,bigendian,symbol_length=1,symbols=(1024*1024)):
                         bit = (byte >> i) & 1
                     bitlist.append(bit)    
                     bits_so_far += 1
+                    if bits_so_far >= bitcount:
+                        break
+                if bits_so_far >= bitcount:
+                    break
+                        
         else:
             break
+    print("LEN bitlist = ", len(bitlist))
+    print("symbols = ", symbols)
+    print("bitcount = ", bitcount)
     return bitlist
 
 parser = argparse.ArgumentParser(description='Test data to establish an entropy estimate, using NIST SP800-90B algorithms.')
@@ -50,6 +59,7 @@ parser.add_argument('-l', '--symbol_length', type=int, default=1,help='Indicate 
 parser.add_argument('--list_tests', action='store_true',help='Display the list of tests')
 parser.add_argument('--test_iid', action='store_true',default=False,help='Run Tests of IID Assumption (section 5)')
 parser.add_argument('-v','--verbose', action='store_true',default=False,help='Output information as tests are running')
+parser.add_argument('-s','--symbols', type=int, default=1048576, help="The number of symbols to read in")
 
 args = parser.parse_args()
 
@@ -134,7 +144,8 @@ else:
     testlist = non_iid_testlist
 
 symbol_length = int(args.symbol_length)
-bits = read_bits_from_file(filename,bigendian)    
+symbol_count = int(args.symbols)
+bits = read_bits_from_file(filename,bigendian,symbol_length=symbol_length,symbols=symbol_count)    
 verbose = args.verbose
 
 #print ("verbose = ",verbose)
