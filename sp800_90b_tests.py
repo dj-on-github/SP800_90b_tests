@@ -107,8 +107,8 @@ non_iid_testlist = [
         'lrs',
         'multi_mcw',
         'lag_prediction',
-        #'multi_mmc_prediction',
-        #'lz78y'
+        'multi_mmc_prediction',
+        'lz78y'
         ]
 
 
@@ -161,7 +161,7 @@ if args.testname:
         else:
             eprint("Min Entropy Estimate : H_inf(X) = ",str(entropy_estimate))
     else:
-        eprint("Test name (%s) not known" % args.ttestname)
+        eprint("Test name (%s) not known" % args.testname)
         exit()
 else:
     results = list()

@@ -76,6 +76,7 @@ def ttuple(bits,symbol_length=1,verbose=True, threshold=35):
             break
         #vprint(verbose,"   Q[t] = ",max_count, "  Q[i]=",Q[1:t+1])
 
+    found = False
     for pos,qt in reversed(list(enumerate(Q[:L+1]))):
         #vprint(verbose,"   pos=",pos, "  qt=",qt)
         if qt >= threshold:

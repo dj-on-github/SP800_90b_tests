@@ -7,8 +7,8 @@ from __future__ import print_function
 from __future__ import division
 
 import math
-from mpmath import *
 from common_functions import *
+
 precision = 300
 
 def bits_to_int(bits):
@@ -160,37 +160,8 @@ def lz78y(bits,symbol_length=1,verbose=True,B=16):
     
     vprint(verbose,"    r                    ", r)
     
-    #   iteratively fine Plocal   
-    iterations = 1000
-    iteration = 0
-    last_p_mid = -1.0
-    p_min = 0.0
-    p_mid = 0.5
-    p_max = 1.0
-
-    found = False
-    
-    while (not(found)):
-        candidate = p_local_func(p_mid,r,N)
-        if candidate > 0.99:
-            p_min = p_mid
-            p_mid = (p_min+p_max)/2.0
-            #vprint(verbose,"   G Last =",last_p_mid," Pmid =",p_mid, " Candidate = ",candidate," tgt = ",x_bar_prime)
-        elif candidate < 0.99:
-            p_max = p_mid
-            p_mid = (p_min+p_max)/2.0
-            #vprint(verbose,"   L Last =",last_p_mid," Pmid =",p_mid, " Candidate = ",candidate," tgt = ",x_bar_prime)
-        elif (candidate == 0.99) or (p_mid == last_p_mid):
-            found = True
-            p_local = p_mid
-            #vprint(verbose,"   M Last =",last_p_mid," Pmid =",p_mid, " Candidate = ",candidate," tgt = ",x_bar_prime)
-            break
-
-        iteration += 1
-        if iteration > iterations:
-            found = False
-            p_local = p_mid
-            break
+    #   iteratively find Plocal 
+    p_local = search_for_p(r,N,iterations=1000, min_plocal=0.0, max_plocal=1.0, tolerance=0.00000001,verbose=False)  
                 
     vprint(verbose,"    p_local              ", p_local)
 
