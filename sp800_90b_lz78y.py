@@ -106,7 +106,7 @@ def lz78y(bits,symbol_length=1,verbose=True,B=16):
                 
                 for cy in range(2**symbol_length):
                     if cy in D[prev]:
-                        if D[prev][cy] > maxyval:
+                        if D[prev][cy] >= maxyval:
                             maxyval = D[prev][cy]
                             y = cy
                 if (maxcount == None) or (D[prev][y] > maxcount):
@@ -133,7 +133,12 @@ def lz78y(bits,symbol_length=1,verbose=True,B=16):
         #            vprint(verbose,"    "," ".ljust(4),add_to_d[line].ljust(20), prevlist[line].ljust(14), str(maxcount).ljust(16),
         #                        " ".ljust(12)," ".ljust(4), " ")
     # step 4
-    C = sum(correct)
+    #C = sum(correct)
+    C = 0
+    for i in correct:
+        if i==1:
+            C += 1
+            
     #vprint(verbose,"    correct              ",correct)
     p_global = float(C)/float(N)
     if (p_global == 0):
@@ -158,13 +163,14 @@ def lz78y(bits,symbol_length=1,verbose=True,B=16):
                 rlen = currentlen
     r = 1+rlen  
     
-    vprint(verbose,"    r                    ", r)
+    vprint(verbose,"    C                    ",C)
+    vprint(verbose,"    r                    ",r)  
     
     #   iteratively find Plocal 
     p_local = search_for_p(r,N,iterations=1000, min_plocal=0.0, max_plocal=1.0, tolerance=0.00000001,verbose=False)  
                 
     vprint(verbose,"    p_local              ", p_local)
-
+  
     # Step 6
     pu = max(p_prime_global,p_local, 1.0/(2**symbol_length))
     min_entropy_per_symbol = -math.log(pu,2)

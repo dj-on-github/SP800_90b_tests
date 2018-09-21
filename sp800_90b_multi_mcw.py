@@ -168,35 +168,13 @@ def multi_mcw(bits,symbol_length=1, verbose=True, ws = [0,63,255,1023,4095]):
 
         if runlength > max_runlength:
             max_runlength = runlength
-
     r = max_runlength+1
-
+    
+    vprint(verbose,"    C                    ",C)
+    vprint(verbose,"    r                    ",r)
+    
     # Binary chop search for Plocal
     P_local = search_for_p(r,N,verbose=verbose)
-    
-    #iterations = 1000
-    #iteration = 0
-    #min_plocal = -0.1
-    #max_plocal = 1.1
-    #found = False
-    #while (iteration < 1000):
-    #    candidate = (min_plocal + max_plocal)/2.0
-    #    result = pfunc(candidate,r,N)
-    #    iteration += 1
-    #    if iteration > iterations:
-    #        found = False
-    #        break
-    #    elif (result > (0.99-0.00000001)) and (result < (0.99+0.00000001)):
-    #        found = True
-    #        P_local = candidate
-    #        break
-    #    elif result > 0.99:
-    #        min_plocal = candidate
-    #    else:
-    #        max_plocal = candidate
-    #
-    #if (found == False):
-    #    print ("Warning: P_local not found")
 
     vprint(verbose,"   P_local                 ",P_local)
     k = 2.0**symbol_length

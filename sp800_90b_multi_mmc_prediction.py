@@ -32,7 +32,6 @@ def int_to_bits(s,l):
     return thebits
 
 def p_local_func(p,r,N):
-    
     q = (1.0-p)
     
     x = 1.0
@@ -155,8 +154,8 @@ def multi_mmc_prediction(bits,symbol_length=1,verbose=True,D=16):
             if currentlen > rlen:
                 rlen = currentlen
     r = 1+rlen  
-    
-    vprint(verbose,"    r                    ", r)
+    vprint(verbose,"    C                    ",C)
+    vprint(verbose,"    r                    ",r)
     
     vprint(verbose,"    STEP 7")
     # Step 7

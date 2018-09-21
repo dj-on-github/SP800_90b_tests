@@ -126,7 +126,9 @@ def lag_prediction(bits,symbol_length=1,verbose=True, D=128):
             max_runlength = runlength
 
     r = max_runlength+1
-
+    vprint(verbose,"    C                    ",C)
+    vprint(verbose,"    r                    ",r)
+    
     #solve_for_p(mu_bar=0.99, n=N, v=r, tolerance=1e-09)
     P_local = search_for_p(r,N,verbose=verbose)
     
