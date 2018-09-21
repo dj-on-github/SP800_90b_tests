@@ -8,6 +8,8 @@ from __future__ import division
 
 import math
 from mpmath import *
+from common_functions import *
+
 precision = 300
 
 def bits_to_int(bits):
@@ -17,16 +19,16 @@ def bits_to_int(bits):
     return theint
        
 def markov(bits,symbol_length,verbose=True):
-    print("MARKOV Test")
+    vprint(verbose,"MARKOV Test")
     L = len(bits)
 
     if symbol_length != 1:
-        print("   Warning, Markov test only defined for 1 bit symbols. Setting symbol length to 1")
+        vprint(verbose,"   Warning, Markov test only defined for 1 bit symbols. Setting symbol length to 1")
 
     
-    #print(bits)
-    print("  Symbol Length         1")
-    print("  Number of bits       ",L)
+    #vprint(verbose,bits)
+    vprint(verbose,"  Symbol Length         1")
+    vprint(verbose,"  Number of bits       ",L)
 
     # step 1
     count0 = 0
@@ -57,8 +59,8 @@ def markov(bits,symbol_length,verbose=True):
     P10 = mpf(C10/(C10 + C11))
     P11 = mpf(C11/(C10 + C11))
 
-    print("   ",P00,P01)
-    print("   ",P10,P11)
+    vprint(verbose,"   ",P00,P01)
+    vprint(verbose,"   ",P10,P11)
     # Step 3
 
     p_seq = [0.0 for x in range(6)]
@@ -70,7 +72,7 @@ def markov(bits,symbol_length,verbose=True):
     p_seq[5] = P1 * power(P11,127)
 
     for (i,p) in enumerate(p_seq):
-        print("    ",i, p)
+        vprint(verbose,"    ",i, p)
     # Step 4
 
     p_max = max(p_seq)
@@ -78,7 +80,7 @@ def markov(bits,symbol_length,verbose=True):
     if min_entropy > 1.0:
         min_entropy = 1.0
 
-    print("  Min Entropy per bit  ",min_entropy)
+    vprint(verbose,"  Min Entropy per bit  ",min_entropy)
     return (False, None, min_entropy)
 
     
@@ -89,4 +91,4 @@ if __name__ == "__main__":
             0,1,0,1,1,1,0]
     (iid_assumption,T,min_entropy) = markov(bits,1)
     
-    print("min_entropy = ",min_entropy)
+    vprint(verbose,"min_entropy = ",min_entropy)

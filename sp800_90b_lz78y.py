@@ -38,32 +38,32 @@ def p_local_func(p,r,N):
     x = 1.0
     for i in range(1,11):
         x = 1.0 + q*(p**r)*(x**(r+1))
-    #print("     x : ",x)
+    #vprint(verbose,"     x : ",x)
     result = (1.0-(p*x))/((r+1.0-(r*x))*q)
     result = result / (x**(N+1))
     return result
 
     
 def lz78y(bits,symbol_length=1,verbose=True,B=16):
-    print("LZ78Y Test")
+    vprint(verbose,"LZ78Y Test")
     bitcount = len(bits)
     L = bitcount//symbol_length
     
-    #print(bits)
-    print("    Symbol Length        ",symbol_length)
-    print("    Number of bits       ",(L * symbol_length))
-    print("    Number of Symbols    ",L)
+    #vprint(verbose,bits)
+    vprint(verbose,"    Symbol Length        ",symbol_length)
+    vprint(verbose,"    Number of bits       ",(L * symbol_length))
+    vprint(verbose,"    Number of Symbols    ",L)
 
     # Split bits into integer symbols
     #   prepend with 0, so the symbols are indexed from 1
-    #print(bits)
+    #vprint(verbose,bits)
     S = [0,] + [ bits_to_int(bits[symbol_length*i:symbol_length*(i+1)]) for i in range(L)]
-    #print(S)
+    #vprint(verbose,S)
     #Step 1
     N = L-B-1
     
-    print("    B                    ",B)
-    print("    N                    ",N)
+    vprint(verbose,"    B                    ",B)
+    vprint(verbose,"    N                    ",N)
     correct = [0 for x in range(N+1)]
     maxDictionarySize = 65536
     
@@ -73,7 +73,7 @@ def lz78y(bits,symbol_length=1,verbose=True,B=16):
     
     # Step 3
     if verbose:
-        print("    ","i".ljust(4),"Add to D".ljust(20),"prev".ljust(14),"Max D[prev]".ljust(16),
+        vprint(verbose,"    ","i".ljust(4),"Add to D".ljust(20),"prev".ljust(14),"Max D[prev]".ljust(16),
                 "prediction".ljust(12),"Si".ljust(4),"Correct_i-b-1")
     for i in range(B+2,L+1):
         add_to_d = list()
@@ -117,9 +117,9 @@ def lz78y(bits,symbol_length=1,verbose=True,B=16):
             correct[i-B-1] = 1
         
         # print out table line
-        #print(add_to_d)
-        #print(prevlist)
-        #print(maxdlist)
+        #vprint(verbose,add_to_d)
+        #vprint(verbose,prevlist)
+        #vprint(verbose,maxdlist)
         #if verbose:
         #    for pad in range(20):
         #        add_to_d.append("-")
@@ -127,22 +127,22 @@ def lz78y(bits,symbol_length=1,verbose=True,B=16):
         #        maxdlist.append("-")
         #    for line in range(4):
         #        if line == 0:
-        #            print("    ",str(i).ljust(4),add_to_d[line].ljust(20), prevlist[line].ljust(14), str(maxcount).ljust(16),
+        #            vprint(verbose,"    ",str(i).ljust(4),add_to_d[line].ljust(20), prevlist[line].ljust(14), str(maxcount).ljust(16),
         #                        str(prediction).ljust(12),str(S[i]).ljust(4), correct[i-B-1])
         #        else:
-        #            print("    "," ".ljust(4),add_to_d[line].ljust(20), prevlist[line].ljust(14), str(maxcount).ljust(16),
+        #            vprint(verbose,"    "," ".ljust(4),add_to_d[line].ljust(20), prevlist[line].ljust(14), str(maxcount).ljust(16),
         #                        " ".ljust(12)," ".ljust(4), " ")
     # step 4
     C = sum(correct)
-    #print("    correct              ",correct)
+    #vprint(verbose,"    correct              ",correct)
     p_global = float(C)/float(N)
     if (p_global == 0):
         p_prime_global = 1-(0.001**(1.0/N))
     else:
         p_prime_global = min(1.0,p_global + (2.576 * math.sqrt( (p_global*(1.0-p_global))/(N-1.0))))
     
-    print("    p_global             ", p_global)
-    print("    p_prime_global       ", p_prime_global)
+    vprint(verbose,"    p_global             ", p_global)
+    vprint(verbose,"    p_prime_global       ", p_prime_global)
     
     # Step 5
      #  Find run of longest ones in correct, to find r
@@ -158,7 +158,7 @@ def lz78y(bits,symbol_length=1,verbose=True,B=16):
                 rlen = currentlen
     r = 1+rlen  
     
-    print("    r                    ", r)
+    vprint(verbose,"    r                    ", r)
     
     #   iteratively fine Plocal   
     iterations = 1000
@@ -175,15 +175,15 @@ def lz78y(bits,symbol_length=1,verbose=True,B=16):
         if candidate > 0.99:
             p_min = p_mid
             p_mid = (p_min+p_max)/2.0
-            #print("   G Last =",last_p_mid," Pmid =",p_mid, " Candidate = ",candidate," tgt = ",x_bar_prime)
+            #vprint(verbose,"   G Last =",last_p_mid," Pmid =",p_mid, " Candidate = ",candidate," tgt = ",x_bar_prime)
         elif candidate < 0.99:
             p_max = p_mid
             p_mid = (p_min+p_max)/2.0
-            #print("   L Last =",last_p_mid," Pmid =",p_mid, " Candidate = ",candidate," tgt = ",x_bar_prime)
+            #vprint(verbose,"   L Last =",last_p_mid," Pmid =",p_mid, " Candidate = ",candidate," tgt = ",x_bar_prime)
         elif (candidate == 0.99) or (p_mid == last_p_mid):
             found = True
             p_local = p_mid
-            #print("   M Last =",last_p_mid," Pmid =",p_mid, " Candidate = ",candidate," tgt = ",x_bar_prime)
+            #vprint(verbose,"   M Last =",last_p_mid," Pmid =",p_mid, " Candidate = ",candidate," tgt = ",x_bar_prime)
             break
 
         iteration += 1
@@ -192,16 +192,16 @@ def lz78y(bits,symbol_length=1,verbose=True,B=16):
             p_local = p_mid
             break
                 
-    print("    p_local              ", p_local)
+    vprint(verbose,"    p_local              ", p_local)
 
     # Step 6
     pu = max(p_prime_global,p_local, 1.0/(2**symbol_length))
     min_entropy_per_symbol = -math.log(pu,2)
     min_entropy_per_bit = min_entropy_per_symbol/symbol_length
 
-    print("    pu                   ",pu)
-    print("    Symbol Min Entropy   ",min_entropy_per_symbol)
-    print("    Min Entropy per bit  ",min_entropy_per_bit)
+    vprint(verbose,"    pu                   ",pu)
+    vprint(verbose,"    Symbol Min Entropy   ",min_entropy_per_symbol)
+    vprint(verbose,"    Min Entropy per bit  ",min_entropy_per_bit)
 
     return (False, None, min_entropy_per_bit)
 
@@ -213,6 +213,6 @@ if __name__ == "__main__":
         bits = bits + int_to_bits(s,2)
     (iid_assumption,T,min_entropy) = lz78y(bits,symbol_length=2,B=4)
     
-    print("min_entropy = ",min_entropy)
+    vprint(verbose,"min_entropy = ",min_entropy)
           
 

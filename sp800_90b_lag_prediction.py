@@ -52,24 +52,24 @@ def int_to_bits(s,l):
 #    return result
 
 def lag_prediction(bits,symbol_length=1,verbose=True, D=128):
-    print("LAG PREDICTION Test")
+    vprint(verbose,"LAG PREDICTION Test")
     bitcount = len(bits)
     L = bitcount//symbol_length
 
-    #print(bits)
-    print("   Symbol Length           ",symbol_length)
-    print("   Number of bits          ",(L * symbol_length))
-    print("   Number of Symbols       ",L)
+    #vprint(verbose,bits)
+    vprint(verbose,"   Symbol Length           ",symbol_length)
+    vprint(verbose,"   Number of bits          ",(L * symbol_length))
+    vprint(verbose,"   Number of Symbols       ",L)
 
     # Split bits into integer symbols
     # Prefix with 0 to start index at 1.
     s = [0,]+[ bits_to_int(bits[symbol_length*i:symbol_length*(i+1)]) for i in range(L)]
-    #print(symbols) 
+    #vprint(verbose,symbols) 
 
     #Steps 1
     #w = ws # Window Sizes
     N = L-1
-    print("   N                       ",N)
+    vprint(verbose,"   N                       ",N)
     lag = [None for i in range(D+1)] # add to to base from 1.
     correct = [0 for i in range(N+1)]
     
@@ -108,8 +108,8 @@ def lag_prediction(bits,symbol_length=1,verbose=True, D=128):
     else:
         P_prime_global = min(1.0,P_global + (2.576*math.sqrt((P_global*(1.0-P_global)/(N-1.0))))) 
 
-    print("   P_global                ",P_global)
-    print("   P_prime_global          ",P_prime_global)
+    vprint(verbose,"   P_global                ",P_global)
+    vprint(verbose,"   P_prime_global          ",P_prime_global)
     
     # Step 6
     
@@ -156,13 +156,13 @@ def lag_prediction(bits,symbol_length=1,verbose=True, D=128):
         if (found == False):
             print ("Warning: P_local not found")
 
-    print("   P_local                 ",P_local)
+    vprint(verbose,"   P_local                 ",P_local)
     k = 2.0**symbol_length
     min_entropy = -math.log(max(P_prime_global,P_local,1.0/k),2)
     min_entropy_per_bit = min_entropy/symbol_length
 
-    print("   Min Entropy per symbol  ",min_entropy)
-    print("   Min Entropy per bit     ",min_entropy_per_bit)
+    vprint(verbose,"   Min Entropy per symbol  ",min_entropy)
+    vprint(verbose,"   Min Entropy per bit     ",min_entropy_per_bit)
     return (False, None, min_entropy_per_bit)
 
 if __name__ == "__main__":
@@ -172,4 +172,4 @@ if __name__ == "__main__":
         bits = bits + int_to_bits(s,2)
     (iid_assumption,T,min_entropy) = lag_prediction(bits,symbol_length=2,D=3)
     
-    print("min_entropy = ",min_entropy)
+    vprint(verbose,"min_entropy = ",min_entropy)

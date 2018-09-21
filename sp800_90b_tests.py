@@ -9,12 +9,9 @@ from __future__ import print_function
 
 import argparse
 import sys
+from common_functions import *
 
-def vprint(verbose,*args,**kwargs):
-    if verbose:
-        print(*args,**kwargs)
-
-def read_bits_from_file(filename,bigendian,symbol_length=1,symbols=(1024*1024)):
+def read_bits_from_file(filename,bigendian,symbol_length=1,symbols=(1024*1024),verbose=True):
     bitlist = list()
     bitcount = symbol_length*symbols
     bits_so_far = 0
@@ -46,9 +43,9 @@ def read_bits_from_file(filename,bigendian,symbol_length=1,symbols=(1024*1024)):
                         
         else:
             break
-    print("LEN bitlist = ", len(bitlist))
-    print("symbols = ", symbols)
-    print("bitcount = ", bitcount)
+    vprint(verbose,"LEN bitlist = ", len(bitlist))
+    vprint(verbose,"symbols = ", symbols)
+    vprint(verbose,"bitcount = ", bitcount)
     return bitlist
 
 parser = argparse.ArgumentParser(description='Test data to establish an entropy estimate, using NIST SP800-90B algorithms.')
@@ -108,7 +105,7 @@ non_iid_testlist = [
         'compression',
         'ttuple',
         'lrs',
-        #'multi_mcw',
+        'multi_mcw',
         'lag_prediction',
         #'multi_mmc_prediction',
         #'lz78y'
@@ -145,8 +142,9 @@ else:
 
 symbol_length = int(args.symbol_length)
 symbol_count = int(args.symbols)
-bits = read_bits_from_file(filename,bigendian,symbol_length=symbol_length,symbols=symbol_count)    
 verbose = args.verbose
+bits = read_bits_from_file(filename,bigendian,symbol_length=symbol_length,symbols=symbol_count,verbose=verbose)    
+
 
 #print ("verbose = ",verbose)
 
@@ -155,23 +153,24 @@ if args.testname:
         m = __import__ ("sp800_90b_"+args.testname)
         func = getattr(m,args.testname)
         vprint(verbose,"TEST: %s" % args.testname)
+        print("TEST: %s" % args.testname)
         (iid_assumption,T,entropy_estimate) = func(bits,symbol_length, verbose=verbose)
 
         if iid_assumption:
-            print("IID Assumption : T = ",str(T))
+            eprint("IID Assumption : T = ",str(T))
         else:
-            print("Min Entropy Estimate : H_inf(X) = ",str(entropy_estimate))
+            eprint("Min Entropy Estimate : H_inf(X) = ",str(entropy_estimate))
     else:
-        print("Test name (%s) not known" % args.ttestname)
+        eprint("Test name (%s) not known" % args.ttestname)
         exit()
 else:
     results = list()
     me_list=list()
     t_list=list()
     for testname in testlist:
-        vprint("TEST: %s" % testname)
+        vprint(verbose,"TEST: %s" % testname)
         if (testname=="markov" or testname=="collision") and (symbol_length > 1):
-            print("  Skipping test, it only runs on 1 bit symbols")
+            vprint(verbose,"  Skipping test, it only runs on 1 bit symbols")
         else:
             m = __import__ ("sp800_90b_"+testname)
             func = getattr(m,testname)
@@ -181,7 +180,7 @@ else:
             summary_name = testname
 
             if T != None:
-                print("  T="+str(T))
+                vprint(verbose,"  T="+str(T))
                 summary_t = str(T)
                 t_list.append(T)
             else:

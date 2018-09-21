@@ -1,8 +1,16 @@
 #!/usr/bin/env python
 
 from math import gamma,e
+import sys
 #import numpy as np
 
+def eprint(*args,**kwargs):
+    print(*args,**kwargs, file=sys.stderr)
+        
+def vprint(verbose,*args,**kwargs):
+    if verbose:
+        print(*args,**kwargs, file=sys.stderr)
+       
 # Binary search 
 def pfunc(plocal,r,N):
     q = 1.0-plocal
@@ -22,20 +30,19 @@ def pfunc(plocal,r,N):
         result = 0.0
     return result
 
-    
 def search_for_p(r,N,iterations=1000, min_plocal=0.0, max_plocal=1.0, tolerance=0.00000001,verbose=False):
     # Binary chop search for Plocal
     iteration = 0
     found = False
     
-    #print("SEARCH FOR P")
-    #print(f'min {min_plocal}  max {max_plocal} verbose={verbose} r={r} N={N}')
+    #vprint(verbose,"SEARCH FOR P")
+    #vprint(verbose,f'min {min_plocal}  max {max_plocal} verbose={verbose} r={r} N={N}')
     while (iteration < iterations):
         candidate = (min_plocal + max_plocal)/2.0 # start in the middle of the range
         result = pfunc(candidate,r,N)
         #print ("iteration =",iteration)
         #if verbose:
-        #    print(f'candidate {candidate}  min {min_plocal}  max {max_plocal}')
+        #    vprint(verbose,f'candidate {candidate}  min {min_plocal}  max {max_plocal}')
         iteration += 1
         if iteration > iterations:
             found = False

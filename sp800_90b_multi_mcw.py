@@ -52,23 +52,23 @@ def pfunc(plocal,r,N):
     return result
 
 def multi_mcw(bits,symbol_length=1, verbose=True, ws = [0,63,255,1023,4095]):
-    print("MULTI MWC Test")
+    vprint(verbose,"MULTI MCW Test")
     bitcount = len(bits)
     L = bitcount//symbol_length
 
-    #print(bits)
-    print("   Symbol Length           ",symbol_length)
-    print("   Number of bits          ",(L * symbol_length))
-    print("   Number of Symbols       ",L)
+    #vprint(verbose,bits)
+    vprint(verbose,"   Symbol Length           ",symbol_length)
+    vprint(verbose,"   Number of bits          ",(L * symbol_length))
+    vprint(verbose,"   Number of Symbols       ",L)
 
     # Split bits into integer symbols
     symbols = [ bits_to_int(bits[symbol_length*i:symbol_length*(i+1)]) for i in range(L)]
-    #print(symbols) 
+    #vprint(verbose,symbols) 
 
     #Steps 1
     w = ws # Window Sizes
     N = L-w[1]
-    print("   N                       ",N)
+    vprint(verbose,"   N                       ",N)
     correct = [0 for i in range(N+1)]
     
     # Step 2
@@ -80,7 +80,7 @@ def multi_mcw(bits,symbol_length=1, verbose=True, ws = [0,63,255,1023,4095]):
     # Step 3
     symbols = [0,]+symbols
     #for i in range(w[1]+1,L+1):
-    #print("   i     frequent                    scoreboard3b    winner  prediction   si      correct[i-w[1]] scoreboard3d")
+    #vprint(verbose,"   i     frequent                    scoreboard3b    winner  prediction   si      correct[i-w[1]] scoreboard3d")
     for i in range(w[1]+1,L+1):
         for j in [1,2,3,4]:
             if (i > w[j]):
@@ -99,27 +99,27 @@ def multi_mcw(bits,symbol_length=1, verbose=True, ws = [0,63,255,1023,4095]):
                         t = tiebreaker
                         tiebreaker += 1
                         counts[s] = (1,t)
-                #print("Counts : ",counts)
+                #vprint(verbose,"Counts : ",counts)
                 # find max frequency
                 themax = 0
                 for s in counts:
                     (c,t) = counts[s]
                     if c > themax:
                         themax = c
-                #print("MAX COUNT:",themax)
+                #vprint(verbose,"MAX COUNT:",themax)
                 # use the tiebreaker
                 themax_tiebreaker = 0
                 for s in counts:
                     (c,t) = counts[s]
                     if c == themax:
-                        #print("IF ",t,">",themax_tiebreaker, "answer=",(t > themax_tiebreaker))
+                        #vprint(verbose,"IF ",t,">",themax_tiebreaker, "answer=",(t > themax_tiebreaker))
                         if t > themax_tiebreaker:
-                            #print("  T > THEMAX_TIEBREAKER  t:",t,"   tmt:",themax_tiebreaker)
+                            #vprint(verbose,"  T > THEMAX_TIEBREAKER  t:",t,"   tmt:",themax_tiebreaker)
                             themax_tiebreaker = t
                             most_frequent_symbol = s
-                            #print("  NOW T = THEMAX_TIEBREAKER  t:",t,"  tmt:",themax_tiebreaker)
+                            #vprint(verbose,"  NOW T = THEMAX_TIEBREAKER  t:",t,"  tmt:",themax_tiebreaker)
 
-                    #print(" TIEBREAKER: s=",s,"  count = ",c,"  t=",t," max_tieb:",themax_tiebreaker," most_freq_s:",most_frequent_symbol)
+                    #vprint(verbose," TIEBREAKER: s=",s,"  count = ",c,"  t=",t," max_tieb:",themax_tiebreaker," most_freq_s:",most_frequent_symbol)
                 # set frequent[j] to the most frequent and recent symbol
                 frequent[j] = most_frequent_symbol
             else:
@@ -136,10 +136,10 @@ def multi_mcw(bits,symbol_length=1, verbose=True, ws = [0,63,255,1023,4095]):
                     winner = j
         
         #scoreboard3d = scoreboard[:]
-        #print("  ",str(i).ljust(5),str(frequent[1:]).ljust(27),str(scoreboard3b[1:]).ljust(15),
+        #vprint(verbose,"  ",str(i).ljust(5),str(frequent[1:]).ljust(27),str(scoreboard3b[1:]).ljust(15),
         #      str(winner).ljust(7),str(prediction).ljust(12),str(symbols[i]).ljust(7),
         #      str(correct[i-w[1]]).ljust(15),str(scoreboard3d[1:]).ljust(12),)
-    #print("   Correct                 ",correct)
+    #vprint(verbose,"   Correct                 ",correct)
     # Step 4
     C = 0
     for i in correct:
@@ -153,8 +153,8 @@ def multi_mcw(bits,symbol_length=1, verbose=True, ws = [0,63,255,1023,4095]):
     else:
         P_prime_global = min(1.0,P_global + (2.576*math.sqrt((P_global*(1.0-P_global)/(N-1.0))))) 
 
-    print("   P_global                ",P_global)
-    print("   P_prime_global          ",P_prime_global)
+    vprint(verbose,"   P_global                ",P_global)
+    vprint(verbose,"   P_prime_global          ",P_prime_global)
     # Step 6
     
     # find longest run of ones in correct[]
@@ -172,37 +172,39 @@ def multi_mcw(bits,symbol_length=1, verbose=True, ws = [0,63,255,1023,4095]):
     r = max_runlength+1
 
     # Binary chop search for Plocal
-    iterations = 1000
-    iteration = 0
-    min_plocal = -0.1
-    max_plocal = 1.1
-    found = False
-    while (iteration < 1000):
-        candidate = (min_plocal + max_plocal)/2.0
-        result = pfunc(candidate,r,N)
-        iteration += 1
-        if iteration > iterations:
-            found = False
-            break
-        elif (result > (0.99-0.00000001)) and (result < (0.99+0.00000001)):
-            found = True
-            P_local = candidate
-            break
-        elif result > 0.99:
-            min_plocal = candidate
-        else:
-            max_plocal = candidate
+    P_local = search_for_p(r,N,verbose=verbose)
+    
+    #iterations = 1000
+    #iteration = 0
+    #min_plocal = -0.1
+    #max_plocal = 1.1
+    #found = False
+    #while (iteration < 1000):
+    #    candidate = (min_plocal + max_plocal)/2.0
+    #    result = pfunc(candidate,r,N)
+    #    iteration += 1
+    #    if iteration > iterations:
+    #        found = False
+    #        break
+    #    elif (result > (0.99-0.00000001)) and (result < (0.99+0.00000001)):
+    #        found = True
+    #        P_local = candidate
+    #        break
+    #    elif result > 0.99:
+    #        min_plocal = candidate
+    #    else:
+    #        max_plocal = candidate
+    #
+    #if (found == False):
+    #    print ("Warning: P_local not found")
 
-    if (found == False):
-        print ("Warning: P_local not found")
-
-    print("   P_local                 ",P_local)
+    vprint(verbose,"   P_local                 ",P_local)
     k = 2.0**symbol_length
     min_entropy = -math.log(max(P_prime_global,P_local,1.0/k),2)
     min_entropy_per_bit = min_entropy/symbol_length
 
-    print("   Min Entropy per symbol  ",min_entropy)
-    print("   Min Entropy per bit     ",min_entropy_per_bit)
+    vprint(verbose,"   Min Entropy per symbol  ",min_entropy)
+    vprint(verbose,"   Min Entropy per bit     ",min_entropy_per_bit)
     return (False, None, min_entropy_per_bit)
 
 if __name__ == "__main__":
@@ -212,4 +214,4 @@ if __name__ == "__main__":
         bits = bits + int_to_bits(s,2)
     (iid_assumption,T,min_entropy) = multi_mcw(bits,symbol_length=2,ws=[0,3,5,7,9])
     
-    print("min_entropy = ",min_entropy)
+    vprint(verbose,"min_entropy = ",min_entropy)
