@@ -11,6 +11,15 @@ import argparse
 import sys
 from common_functions import *
 
+# do min on list with None in it
+def holey_min(l):
+    m = 100000000000
+    for c in l:
+        if c != None:
+            if c<m:
+                m = c
+    return m
+    
 def read_bits_from_file(filename,bigendian,symbol_length=1,symbols=(1024*1024),verbose=True):
     bitlist = list()
     bitcount = symbol_length*symbols
@@ -57,6 +66,8 @@ parser.add_argument('--list_tests', action='store_true',help='Display the list o
 parser.add_argument('--test_iid', action='store_true',default=False,help='Run Tests of IID Assumption (section 5)')
 parser.add_argument('-v','--verbose', action='store_true',default=False,help='Output information as tests are running')
 parser.add_argument('-s','--symbols', type=int, default=1048576, help="The number of symbols to read in")
+parser.add_argument('-p','--parse_filenames', action='store_true',default=False,help='Extract test conditions from filename')
+parser.add_argument('-c','--csv', action='store_true',default=False,help='Output data in CSV format')
 
 args = parser.parse_args()
 
@@ -125,6 +136,15 @@ iid_testlist = [
         'compression_test_statistic',
         'mcv']   # MCV is the only min entropy estimator for IID (see section 6.1)
 
+csv = args.csv
+symbol_length = int(args.symbol_length)
+symbol_count = int(args.symbols)
+verbose = args.verbose
+
+# print CSV header
+if csv:
+    print("file, bits_per_symbol, symbol_count, min_min_entropy, mcv, collision, markov, compression, ttuple, lrs, multi_mcw, lag_prediction, multi_mmc_prediction, lz78y")
+
 if args.list_tests:
     print("Testing the IID Assumption")
     for i,testname in zip(range(len(iid_testlist)),iid_testlist):
@@ -140,9 +160,8 @@ if args.test_iid:
 else:
     testlist = non_iid_testlist
 
-symbol_length = int(args.symbol_length)
-symbol_count = int(args.symbols)
-verbose = args.verbose
+parse_filenames = args.parse_filenames
+
 bits = read_bits_from_file(filename,bigendian,symbol_length=symbol_length,symbols=symbol_count,verbose=verbose)    
 
 
@@ -153,7 +172,6 @@ if args.testname:
         m = __import__ ("sp800_90b_"+args.testname)
         func = getattr(m,args.testname)
         vprint(verbose,"TEST: %s" % args.testname)
-        print("TEST: %s" % args.testname)
         (iid_assumption,T,entropy_estimate) = func(bits,symbol_length, verbose=verbose)
 
         if iid_assumption:
@@ -170,7 +188,19 @@ else:
     for testname in testlist:
         vprint(verbose,"TEST: %s" % testname)
         if (testname=="markov" or testname=="collision") and (symbol_length > 1):
-            vprint(verbose,"  Skipping test, it only runs on 1 bit symbols")
+            vprint(verbose,"  Skipping test %s, it only runs on 1 bit symbols" % testname)
+            iid_assumption=False
+            
+            summary_name = testname
+            
+            min_entropy = None
+            summary_me = "None"
+            me_list.append(None)
+            
+            summary_t = "None"
+            t_list.append(None)
+            
+            results.append((summary_name,summary_t, summary_me))
         else:
             m = __import__ ("sp800_90b_"+testname)
             func = getattr(m,testname)
@@ -194,21 +224,45 @@ else:
                 summary_me = None
         
             results.append((summary_name,summary_t, summary_me))
+    if csv:
+        vlist = [str(filename),str(symbol_length),str(symbol_count)]
+        min_min_entropy = holey_min(me_list)
+        vlist.append(str(min_min_entropy))
+        for result in results:
+            (_,_,me)=result
+            vlist.append(str(me))
+        astring = ",".join(vlist)
+        print(astring)
         
-    print
-    print("SUMMARY")
-    print("-------")
-    print("File            ",filename)
-    print("Bits per symbol ",symbol_length)
-    print("Symbol Count    ",len(bits)//symbol_length)
-    print("")      
-    print("NAME".ljust(40),"T".ljust(18),"MIN ENTROPY") 
-    print("----".ljust(40),"-".ljust(18),"-----------") 
-    for result in results:
-        (summary_name,summary_t, summary_me) = result
-        print(summary_name.ljust(40),str(summary_t).ljust(18),str(summary_me))
-    min_min_entropy = min(me_list)
+        vprint(verbose,"")
+        vprint(verbose,"SUMMARY")
+        vprint(verbose,"-------")
+        vprint(verbose,"File            ",filename)
+        vprint(verbose,"Bits per symbol ",symbol_length)
+        vprint(verbose,"Symbol Count    ",len(bits)//symbol_length)
+        vprint(verbose,"")      
+        vprint(verbose,"NAME".ljust(40),"T".ljust(18),"MIN ENTROPY") 
+        vprint(verbose,"----".ljust(40),"-".ljust(18),"-----------") 
+        for result in results:
+            (summary_name,summary_t, summary_me) = result
+            vprint(verbose, summary_name.ljust(40),str(summary_t).ljust(18),str(summary_me))
 
-    print("Minimum Min Entropy = ",min_min_entropy)
-    print("COMPLETE")
+        vprint(verbose,"Minimum Min Entropy = ",min_min_entropy)
+        vprint(verbose,"COMPLETE")        
+    else:
+        print("SUMMARY")
+        print("-------")
+        print("File            ",filename)
+        print("Bits per symbol ",symbol_length)
+        print("Symbol Count    ",len(bits)//symbol_length)
+        print("")      
+        print("NAME".ljust(40),"T".ljust(18),"MIN ENTROPY") 
+        print("----".ljust(40),"-".ljust(18),"-----------") 
+        for result in results:
+            (summary_name,summary_t, summary_me) = result
+            print(summary_name.ljust(40),str(summary_t).ljust(18),str(summary_me))
+        min_min_entropy = holey_min(me_list)
+
+        print("Minimum Min Entropy = ",min_min_entropy)
+        print("COMPLETE")
 

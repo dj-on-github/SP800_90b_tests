@@ -77,6 +77,7 @@ def multi_mmc_prediction(bits,symbol_length=1,verbose=True,D=16):
     scoreboard = [0 for x in range(D+1)]
     winner = 1
     
+    vprint(verbose,"    STEP 4")
     # step 4
     ys = list()
     for i in range(3,L+1):
@@ -126,12 +127,14 @@ def multi_mmc_prediction(bits,symbol_length=1,verbose=True,D=16):
                 scoreboard[d] += 1
                 if scoreboard[d] >= scoreboard[winner]:
                     winner = d
+    vprint(verbose,"    STEP 5")
     # step 5
     C = 0
     for c in correct:
         if c == 1:
             C+=1
     
+    vprint(verbose,"    STEP 6")
     # step 6
     p_global = float(C)/float(N)
     if (p_global == 0):
@@ -155,11 +158,13 @@ def multi_mmc_prediction(bits,symbol_length=1,verbose=True,D=16):
     
     vprint(verbose,"    r                    ", r)
     
+    vprint(verbose,"    STEP 7")
     # Step 7
     p_local = search_for_p(r,N,iterations=1000, min_plocal=0.0, max_plocal=1.0, tolerance=0.00000001,verbose=False) 
     
     vprint(verbose,"    p_local              ", p_local)
 
+    vprint(verbose,"    STEP 8")
     # Step 8
     pu = max(p_prime_global,p_local, 1.0/(2**symbol_length))
     min_entropy_per_symbol = -math.log(pu,2)
