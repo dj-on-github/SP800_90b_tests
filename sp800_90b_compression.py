@@ -7,6 +7,7 @@ from __future__ import print_function
 from __future__ import division
 
 import math
+from common_functions import *
 
 def bits_to_int(bits):
     theint = 0
@@ -31,31 +32,31 @@ def G(z, v, d, L):
     g_sum += z * sum(st)
     return g_sum/v
         
-def compression(bits,symbol_length=1, d=1000):
-    print("COMPRESSION Test")
+def compression(bits,symbol_length=1,verbose=True, d=1000):
+    vprint(verbose,"COMPRESSION Test")
     L = len(bits)
 
     if symbol_length != 1:
-        print("   Warning, Compression test treats data at 1 bit symbols. Setting symbol length to 1")
+        vprint(verbose,"   Warning, Compression test treats data at 1 bit symbols. Setting symbol length to 1")
 
     
-    #print(bits)
-    print("   Symbol Length        1")
-    print("   Number of bits      ",L)
+    #vprint(verbose,bits)
+    vprint(verbose,"   Symbol Length        1")
+    vprint(verbose,"   Number of bits      ",L)
 
     # step 1
     b = 6
     blocks = L//b
     s_prime = [0,]+[bits_to_int(bits[b*i:b*(i+1)]) for i in range(blocks)]
 
-    print("   Number of blocks    ",blocks)
+    vprint(verbose,"   Number of blocks    ",blocks)
 
     # Step 2
     dict_data = s_prime[1:d+1]
     v = blocks-d
     test_data=s_prime[d+1:]
 
-    print("   v                   ",v)
+    vprint(verbose,"   v                   ",v)
 
     # Step 3
     dictionary = [0 for i in range((2**b)+1)] # Make it 1 bigger and leave the zero element dangling
@@ -66,8 +67,8 @@ def compression(bits,symbol_length=1, d=1000):
     # Step 4
     D = [0,]+[0 for i in range(v)]
     for i in range(d+1,blocks+1):
-        #print("  i = ",i,end="")
-        #print("  s_prime[%d]=" % i,s_prime[i])
+        #vprint(verbose,"  i = ",i,end="")
+        #vprint(verbose,"  s_prime[%d]=" % i,s_prime[i])
         if dictionary[s_prime[i]] != 0:
             #print ("D[i-d] = D[%d - %d] = D[%d]" % (i,d,i-d))
             D[i-d] = i-dictionary[s_prime[i]]
@@ -80,11 +81,11 @@ def compression(bits,symbol_length=1, d=1000):
 
     x_sum = 0.0
     for i in range(1,v+1):
-        #print("   D[",i,"] = ",D[i], "log2(D[i])=",math.log(D[i],2))
+        #vprint(verbose,"   D[",i,"] = ",D[i], "log2(D[i])=",math.log(D[i],2))
         x_sum += math.log(D[i],2)
     x_bar = x_sum/v
 
-    print("   x_bar               ",x_bar)
+    vprint(verbose,"   x_bar               ",x_bar)
 
     c = 0.5907
 
@@ -95,12 +96,12 @@ def compression(bits,symbol_length=1, d=1000):
     s_sum = s_sum - (x_bar**2)
     sigma_hat = c * math.sqrt(s_sum)
     
-    print("   sigma_hat           ",sigma_hat)
+    vprint(verbose,"   sigma_hat           ",sigma_hat)
 
     # Step 6
     
     x_bar_prime = x_bar - ((2.576*sigma_hat)/math.sqrt(v))
-    print("   x_bar_prime         ",x_bar_prime)
+    vprint(verbose,"   x_bar_prime         ",x_bar_prime)
 
     # Step 7
 
@@ -108,8 +109,8 @@ def compression(bits,symbol_length=1, d=1000):
     p_max = 1.0
     p_mid = (p_min+p_max)/2.0
    
-    print ("   p_min               ",p_min) 
-    print ("   p_max               ",p_max) 
+    vprint(verbose,"   p_min               ",p_min) 
+    vprint(verbose,"   p_max               ",p_max) 
     iterations = 1000
     iteration = 0
 
@@ -134,11 +135,11 @@ def compression(bits,symbol_length=1, d=1000):
     # Step 8
     if found:
         min_entropy = -math.log(p_mid,2)/b
-        print("   min_entropy =",min_entropy)
+        vprint(verbose,"   min_entropy =",min_entropy)
         return(False,None,min_entropy)
     else:
         min_entropy = 1.0
-        print("   min_entropy = 1.0")
+        vprint(verbose,"   min_entropy = 1.0")
         return(False,None,min_entropy)
 
 if __name__ == "__main__":
@@ -151,4 +152,4 @@ if __name__ == "__main__":
 
     (iid_assumption,T,min_entropy) = compression(bits,1,d=4)
     
-    print("min_entropy = ",min_entropy)
+    vprint(verbose,"min_entropy = ",min_entropy)
