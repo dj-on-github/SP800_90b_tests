@@ -9,6 +9,7 @@ from __future__ import print_function
 
 import argparse
 import sys
+from mpmath import *
 
 def read_bits_from_file(filename,bigendian,symbol_length=1,symbols=(1024*1024)):
     bitlist = list()
@@ -129,7 +130,7 @@ else:
     testlist = non_iid_testlist
 
 symbol_length = int(args.symbol_length)
-bits = read_bits_from_file(filename,bigendian)    
+bits = read_bits_from_file(filename,bigendian,symbol_length=symbol_length)    
 
 if args.testname:
     if args.testname in testlist:    

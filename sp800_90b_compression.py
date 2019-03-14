@@ -130,6 +130,7 @@ def compression(bits,symbol_length=1, d=1000):
 
         iteration += 1
 
+    print("   p          =",p_mid)
     # Step 8
     if found:
         min_entropy = -math.log(p_mid,2)/b
