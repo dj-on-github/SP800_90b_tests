@@ -49,6 +49,11 @@ def compression(bits,symbol_length=1,verbose=True, d=1000):
     blocks = L//b
     s_prime = [0,]+[bits_to_int(bits[b*i:b*(i+1)]) for i in range(blocks)]
 
+    if blocks <= d:
+        vprint(verbose,"   Warning,  not enough samples to run compression test need more than  ",d)
+        min_entropy = 1.0
+        return(False,None,min_entropy)
+
     vprint(verbose,"   Number of blocks    ",blocks)
 
     # Step 2
